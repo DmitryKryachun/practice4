@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+<ul class="list-group">
+    <a href="/" class="list-group-item list-group-item-success btn btn-success" data-bs-toggle="modal" data-bs-target="#grainModal">Додати культуру</a>
+</ul>
+<div>
+    <h1 class='text-center'>Культури</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Номер</th>
+                <th scope="col">Назва</th>
+                <th scope="col">Дія</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for grain in grains %}
+                <tr>
+                    <th>{{ grain.id }}</th>
+                    <th>{{grain.name}}</td>
+                    <td><a href="{% url 'delete_grain' grain.pk %}" type="button" class="btn btn-danger" >Видалити</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="modal fade " id="grainModal" tabindex="-3" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Додати культуру</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <figure class="text-center">
+            <form action="{% url 'add_grain' %}" method="POST">
+              {{add_grain_form|crispy}}
+              {% csrf_token %}
+              <input type="submit" class="btn btn-success btn-block mb-3" style="margin-bottom: 15px; margin-top: 15px;" value="Підтвердити">
+            </form>
+          </figure>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal">Закрити</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

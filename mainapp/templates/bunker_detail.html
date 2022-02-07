@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div>
+    <div class="album py-3">
+        <h1 class='text-center'>Інформація та дії</h1>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100  shadow-sm" >
+                        <div class="card-body">
+                            <p class="card-text font-weight-bold text-center">Інформація</p>
+                            <h1 class="card-title">{{bunker.name}}</h1>
+                            <h5 class="card-text" style="color: rgb(101, 145, 0);">Культура: {{bunker.grain_type}}</h5>
+                            <h5 class="card-text fw-bolder">{{bunker.qty}} з {{bunker.max_qty}} кг.</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100  shadow-sm" >
+                        <div class="card-body">
+                            <p class="card-text font-weight-bold text-center">Дії</p>
+                            <div class="album py-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-2 h-100"><a href="" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#transactionModal">Додати транзакцію</a></div>
+                                        <div class="col-md-4 mb-2 h-100"><a href="" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal">Редаг. інформацію</a></div>
+                                        <div class="col-md-4 mb-2 h-100"><a href="" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Видалити бункер</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <h1 class='text-center'>Транзакції за бункером {{bunker.name}}</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Опис транзакції</th>
+                <th scope="col">Бункер</th>
+                <th scope="col">Кількість зерна</th>
+                <th scope="col">Дата</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+                <tr>
+                    <th>{{ transaction.title }}</th>
+                    <td>{{ transaction.bunker.name}}</td>
+                    <td>{{transaction.bunker.grain_type}}: {{ transaction.qty }} кг.</td>
+                    <td>{{ transaction.transaction_date }} </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<div class="modal fade " id="transactionModal" tabindex="-3" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Додати транзакцію в бункер {{bunker.name}}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <figure class="text-center">
+            <form action="{% url 'add_transaction' bunker.pk %}" method="POST">
+                {{transaction_form|crispy}}
+                {% csrf_token %}
+                <input type="submit" class="btn btn-success btn-block mb-3" style="margin-bottom: 15px; margin-top: 15px;" value="Підтвердити">
+              </form>
+          </figure>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal">Закрити</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="modal fade " id="deleteModal" tabindex="-3" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+      <div class="modal-content bg-danger">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">ВИДАЛИТИ БУНКЕР</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <figure class="text-center">
+            <h2>ВИ ВПЕВНЕНІ ЩО ХОЧЕТЕ ВИДАЛИТИ БУНКЕР?</h2>
+            <p>(Видалення бункеру призведе до видалення всіх записів з БД)</p>
+            <a href="{% url 'delete_bunker' bunker.pk %}" type="button" class="btn btn-danger" >ВИДАЛИТИ</a>
+            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Відмінити</button>
+          </figure>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade " id="editModal" tabindex="-3" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Редагувати інформацію про бункер</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <figure class="text-center">
+            <form action="{% url 'edit_bunker' bunker.pk %}" method="POST">
+                {{edit_bunker_form|crispy}}
+                {% csrf_token %}
+                <input type="submit" class="btn btn-success btn-block mb-3" style="margin-bottom: 15px; margin-top: 15px;" value="Підтвердити">
+              </form>
+          </figure>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal">Закрити</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
