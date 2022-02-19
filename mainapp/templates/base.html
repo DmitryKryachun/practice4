@@ -1,5 +1,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
+{% load percent %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -40,12 +41,19 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class= "navbar-nav ">
+              {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                  <span class="navbar text text-light">
+                    <a href="{% url 'logout' %}" style="text-decoration: none; color: white;"> Вийти</a>
+                  </span>
+                </li>
+             {% endif %}
               <li class="nav-item dropdown">
                 {%if request.user.is_superuser or request.user.is_staff %}
     
                   <a class="nav-link fs-6 text-light dropdown-toggle" href="#" id="navbarDropdown" role="button" 
                   data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="badge bg-danger" style="font-size: large;">Додаткові дії</span>
+                    <span class="badge bg-danger">Додаткові дії</span>
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="/admin">Адмін-панель</a>
@@ -77,12 +85,12 @@
                         <div class="row">
                         {% for bunker in bunkers %}
                             <div class="col-md-3 mb-4">
-                                <div class="card h-100  shadow-sm" >
+                                <div class="card h-100  shadow-sm" style="background: linear-gradient(to top, rgb(255, 196, 0) {{bunker.qty|calc:bunker.max_qty}}%, transparent 0%);" >
                                     <div class="card-body">
                                     <h5 class="card-title">{{bunker.name}}</h5>
                                     <p class="card-text">{{bunker.grain_type}}</p>
                                     <p class="card-text">{{bunker.qty}} з {{bunker.max_qty}} кг.</p>
-                                    <a href="{% url 'bunker_detail' bunker.pk %}" class="btn btn-warning">Детальніше</a>
+                                    <a href="{% url 'bunker_detail' bunker.pk %}" class="btn btn-success">Детальніше</a>
                                     </div>
                                 </div>
                             </div>
@@ -146,7 +154,7 @@
         <button type="button" class="btn btn-success" style="padding-top: 3px; padding-bottom: 2px;" data-bs-toggle="modal" data-bs-target="#aboutModal">
           ІНФО
         </button>
-        2022
+        ПП "НОВАТОР АГРО", 2022
       </p>
     </div>
 
@@ -184,7 +192,7 @@
               <small class="text-muted">Visual Studio Code</small>
               <br>
               <hr>
-              <a href="https://github.com/DmitryKryachun/Course4">GITHUB</a>
+              <a href="https://github.com/DmitryKryachun/practice4">GITHUB</a>
             </figure>
           </div>
           <div class="modal-footer">

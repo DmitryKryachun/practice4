@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import AddGrainView, BaseView, AddBunkerView, BunkerDetailView, DeleteBunkerView, AddTransactionView, DeleteGrainView, EditBunkerView, GrainView
+from django.contrib.auth.views import LogoutView
+from .views import AddGrainView, BaseView, AddBunkerView, BunkerDetailView, DeleteBunkerView, AddTransactionView, DeleteGrainView, EditBunkerView, GrainView, LoginView
 urlpatterns = [
     path('', BaseView.as_view(), name='base'),
     path('add-bunker/', AddBunkerView.as_view(), name='add_bunker'),
@@ -9,5 +10,7 @@ urlpatterns = [
     path('grains/', GrainView.as_view(), name='grains'),
     path('delete-grain/<int:pk>', DeleteGrainView.as_view(), name='delete_grain'),
     path('add-grain/', AddGrainView.as_view(), name='add_grain'),
-    path('edit-bunker/<int:pk>', EditBunkerView.as_view(), name='edit_bunker')
+    path('edit-bunker/<int:pk>', EditBunkerView.as_view(), name='edit_bunker'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(next_page="/"), name='logout')
 ]

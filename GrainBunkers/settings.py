@@ -128,3 +128,5 @@ GRAPH_MODELS = {
   'all_applications': True,
   'group_models': True,
 }
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

@@ -2,6 +2,7 @@
 {% load static %}
 {% block content %}
 {% load crispy_forms_tags %}
+{% load percent %}
 
 <div>
     <div class="album py-3">
@@ -9,8 +10,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 mb-4">
-                    <div class="card h-100  shadow-sm" >
-                        <div class="card-body">
+                    <div class="card h-100">
+                        <div class="card-body" style="background: linear-gradient(to right, rgba(255, 193, 59, 0.89) {{bunker.qty|calc:bunker.max_qty}}%, transparent 0%);">
                             <p class="card-text font-weight-bold text-center">Інформація</p>
                             <h1 class="card-title">{{bunker.name}}</h1>
                             <h5 class="card-text" style="color: rgb(101, 145, 0);">Культура: {{bunker.grain_type}}</h5>

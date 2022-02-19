@@ -1,14 +1,17 @@
 from django.shortcuts import render
 from django.views.generic import View, DetailView
-
+from django.contrib.auth import authenticate, login
 from mainapp.utils import recalc_bunker, calc_bunker
 from .models import *
-from .forms import BunkerForm, TransactionForm, GrainForm
+from .forms import BunkerForm, TransactionForm, GrainForm, LoginForm
 from django.http import HttpResponseRedirect
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 
-class BaseView(View):
+class BaseView(LoginRequiredMixin, View):
+
+    login_url = '/login/'
 
     def get(self, request, *args, **kwargs):
         
@@ -22,7 +25,9 @@ class BaseView(View):
         }
         return render(request, 'base.html', context)
 
-class AddBunkerView(View):
+class AddBunkerView(LoginRequiredMixin, View):
+
+    login_url = '/login/'
 
     def post(self, request, *args, **kwargs):
         form = BunkerForm(request.POST or None)
@@ -36,8 +41,9 @@ class AddBunkerView(View):
             return HttpResponseRedirect('/')
         return HttpResponseRedirect('/admin')
 
-class BunkerDetailView(DetailView):
+class BunkerDetailView(LoginRequiredMixin, DetailView):
 
+    login_url = '/login/'
     context_object_name = 'bunker'
     template_name = 'bunker_detail.html'
 
@@ -66,7 +72,9 @@ class BunkerDetailView(DetailView):
         context['edit_bunker_form'] = edit_bunker_form
         return context
 
-class DeleteBunkerView(View):
+class DeleteBunkerView(LoginRequiredMixin, View):
+
+    login_url = '/login/'
 
     def get(self, request, *args, **kwargs):
         id = self.kwargs.get('pk')
@@ -76,7 +84,9 @@ class DeleteBunkerView(View):
         return HttpResponseRedirect('/')
 
 
-class AddTransactionView(View):
+class AddTransactionView(LoginRequiredMixin, View):
+
+    login_url = '/login/'
 
     def post(self, request, *args, **kwargs):
         form = TransactionForm(request.POST or None)
@@ -105,7 +115,9 @@ class AddTransactionView(View):
         messages.add_message(request, messages.WARNING, 'Транзакцію не додано! Перевірте правильність введенних данних.')
         return HttpResponseRedirect('/bunker/'+str(id))
 
-class GrainView(View):
+class GrainView(LoginRequiredMixin, View):
+
+    login_url = '/login/'
 
     def get(self, request, *args, **kwargs):
         
@@ -119,7 +131,9 @@ class GrainView(View):
         }
         return render(request,'grain_detail.html', context)
 
-class DeleteGrainView(View):
+class DeleteGrainView(LoginRequiredMixin, View):
+
+    login_url = '/login/'
 
     def get(self, request, *args, **kwargs):
         id = self.kwargs.get('pk')
@@ -128,7 +142,9 @@ class DeleteGrainView(View):
         messages.add_message(request, messages.SUCCESS, "Культуру успішно видалено!")
         return HttpResponseRedirect('/grains/')
 
-class AddGrainView(View):
+class AddGrainView(LoginRequiredMixin, View):
+
+    login_url = '/login/'
 
     def post(self, request, *args, **kwargs):
         form = GrainForm(request.POST or None)
@@ -141,7 +157,9 @@ class AddGrainView(View):
         messages.add_message(request, messages.WARNING, 'Культуру не додано!')
         return HttpResponseRedirect('/grains/')
 
-class EditBunkerView(View):
+class EditBunkerView(LoginRequiredMixin, View):
+
+    login_url = '/login/'
 
     def post(self, request, *args, **kwargs):
         id = self.kwargs.get('pk')
@@ -157,3 +175,28 @@ class EditBunkerView(View):
                 return HttpResponseRedirect('/bunker/'+str(id))
         messages.add_message(request, messages.WARNING, 'Сталася помилка! В бункері зерна більше, чим вказано в місткості!')
         return HttpResponseRedirect('/bunker/'+str(id))
+
+class LoginView(View):
+
+    def get(self, request, *args, **kwargs):
+        form = LoginForm(request.POST or None)
+        context = {
+            'form': form
+        }
+        return render(request, 'login.html', context)
+
+    def post(self, request, *args, **kwargs):
+        form = LoginForm(request.POST or None)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password'] 
+            user = authenticate(username=username, password=password)
+            if user:
+                login(request, user)
+                return HttpResponseRedirect('/')
+
+        context = {
+            'form': form, 
+            'cart': self.cart
+            }
+        return render(request, 'login.html', context)
