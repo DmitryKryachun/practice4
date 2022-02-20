@@ -1,1 +1,1 @@
-web: gunicorn GrainBunkers.wsgi
+web: gunicorn GrainBunkers.wsgi --log-file -
