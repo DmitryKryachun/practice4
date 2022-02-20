@@ -16,7 +16,7 @@ class BaseView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         
         add_bunker_form = BunkerForm()
-        bunkers = Bunker.objects.all()
+        bunkers = Bunker.objects.all().order_by('id')
         transactions = Transaction.objects.all().order_by('-id')[:10]
         context={
             'transactions': transactions,
