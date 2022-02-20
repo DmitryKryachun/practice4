@@ -21,16 +21,14 @@ class BunkerForm(forms.ModelForm):
 
 class TransactionForm(forms.ModelForm):
 
-    transaction_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['transaction_date'].label = 'Дата транзакції'
         
 
     class Meta:
         model = Transaction
         fields = (
-            'title','qty','transaction_date'
+            'title','qty',
         )
 
 class GrainForm(forms.ModelForm):

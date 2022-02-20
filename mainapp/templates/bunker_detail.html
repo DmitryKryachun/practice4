@@ -55,7 +55,7 @@
                 <tr>
                     <th>{{ transaction.title }}</th>
                     <td>{{ transaction.bunker.name}}</td>
-                    <td>{{transaction.bunker.grain_type}}: {{ transaction.qty }} кг.</td>
+                    <td>{{transaction.grain_type}}: {{ transaction.qty }} кг.</td>
                     <td>{{ transaction.transaction_date }} </td>
                 </tr>
             {% endfor %}
@@ -91,7 +91,7 @@
 
   <div class="modal fade " id="deleteModal" tabindex="-3" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog ">
-      <div class="modal-content bg-danger">
+      <div class="modal-content" style="background-color: rgb(250, 136, 136);">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">ВИДАЛИТИ БУНКЕР</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -123,7 +123,12 @@
             <form action="{% url 'edit_bunker' bunker.pk %}" method="POST">
                 {{edit_bunker_form|crispy}}
                 {% csrf_token %}
-                <input type="submit" class="btn btn-success btn-block mb-3" style="margin-bottom: 15px; margin-top: 15px;" value="Підтвердити">
+                <input type="submit" class="btn btn-warning btn-block mb-3" style="margin-bottom: 15px; margin-top: 15px;" value="Підтвердити">
+                <br>
+                <small>УВАГА!</small>
+                <br>
+                <small>При зміні виду культури <b>бункер буде очищено!</b></small>
+                <br>
               </form>
           </figure>
         </div>

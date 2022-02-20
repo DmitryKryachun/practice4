@@ -39,6 +39,7 @@ class Transaction(models.Model):
     title = models.CharField(max_length=100, verbose_name='Опис транзакції')
     qty = models.IntegerField(default=1000, verbose_name='Кількість (кг)')
     bunker = models.ForeignKey(Bunker, verbose_name='Бункер', on_delete=models.CASCADE, related_name='related_transaction')
+    grain_type = models.ForeignKey(Grain, verbose_name='Вид культури', on_delete=models.CASCADE)
     transaction_date = models.DateField(verbose_name='Дата транзакції', default=timezone.now)
 
     def __str__(self):

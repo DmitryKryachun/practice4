@@ -21,8 +21,31 @@
                 <tr>
                     <th>{{ grain.id }}</th>
                     <th>{{grain.name}}</td>
-                    <td><a href="{% url 'delete_grain' grain.pk %}" type="button" class="btn btn-danger" >Видалити</a></td>
+                    <td><a href="" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{grain.pk}}">Видалити</a></td>
                 </tr>
+
+                <div class="modal fade" id="deleteModal{{grain.pk}}" tabindex="-3" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog ">
+                    <div class="modal-content" style="background-color: rgb(250, 136, 136);">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">ВИДАЛИТИ КУЛЬТУРУ {{grain.name}}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <figure class="text-center">
+                          <h2>ВИ ВПЕВНЕНІ ЩО ХОЧЕТЕ ВИДАЛИТИ ЦЮ КУЛЬТУРУ?</h2>
+                          <p>Видалення культури призведе до видалення бункерів, що зараз її вміщають в собі.</p>
+                          <p>Щоб запобігти цього, спочатку <b>змініть культуру в бункері</b>, перейшовши в детальну інформацію бункеру і натиснувши "Редаг. інформацію".</p>
+                          <a href="{% url 'delete_grain' grain.pk %}" type="button" class="btn btn-danger" >ВИДАЛИТИ</a>
+                          <button type="button" class="btn btn-success" data-bs-dismiss="modal">Відмінити</button>
+                        </figure>
+                      </div>
+                      <div class="modal-footer">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
             {% endfor %}
         </tbody>
     </table>

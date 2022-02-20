@@ -98,8 +98,9 @@ class AddTransactionView(LoginRequiredMixin, View):
                 new_transaction = form.save(commit=False)
                 new_transaction.title = form.cleaned_data['title']
                 new_transaction.qty = form.cleaned_data['qty']
-                new_transaction.transaction_date = form.cleaned_data['transaction_date']
+                new_transaction.transaction_date = date.today()
                 new_transaction.bunker = bunker
+                new_transaction.grain_type = bunker.grain_type
                 new_transaction.save()
                 bunker.transactions.add(new_transaction)
                 bunker.save()
@@ -169,8 +170,18 @@ class EditBunkerView(LoginRequiredMixin, View):
             if bunker.qty<=form.cleaned_data['max_qty']:
                 bunker.name = form.cleaned_data['name']
                 bunker.max_qty = form.cleaned_data['max_qty']
+                if bunker.grain_type != form.cleaned_data['grain_type']:
+                    new_transaction = Transaction()
+                    new_transaction.title = '(РЕД) Очистка бункеру: зміна культури з {0} на {1}'.format(bunker.grain_type.name, form.cleaned_data['grain_type'].name)
+                    new_transaction.qty = -1 * bunker.qty
+                    new_transaction.transaction_date = date.today()
+                    new_transaction.bunker = bunker
+                    new_transaction.grain_type = bunker.grain_type
+                    new_transaction.save()
+                    bunker.transactions.add(new_transaction)
                 bunker.grain_type = form.cleaned_data['grain_type']
                 bunker.save()
+                recalc_bunker(bunker)
                 messages.add_message(request, messages.SUCCESS, 'Бункер відредаговано!')
                 return HttpResponseRedirect('/bunker/'+str(id))
         messages.add_message(request, messages.WARNING, 'Сталася помилка! В бункері зерна більше, чим вказано в місткості!')
@@ -196,7 +207,6 @@ class LoginView(View):
                 return HttpResponseRedirect('/')
 
         context = {
-            'form': form, 
-            'cart': self.cart
+            'form': form
             }
         return render(request, 'login.html', context)
